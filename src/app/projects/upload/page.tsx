@@ -26,7 +26,7 @@ export default function ShareWorkPage() {
   const [description, setDescription] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null); // 🔹 미리보기 추가
+  //const [preview, setPreview] = useState<string | null>(null); // 🔹 미리보기 추가
 
   const [error, setError] = useState("");
 
@@ -42,19 +42,6 @@ export default function ShareWorkPage() {
     }
   }
 
-  // 🔹 썸네일 이미지 선택 시 미리보기 설정
-  const handleThumbnailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setThumbnail(file);
-
-    if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => setPreview(reader.result as string); // 🔹 Base64 미리보기 표시
-    } else {
-      setPreview(null);
-    }
-  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -66,8 +53,12 @@ export default function ShareWorkPage() {
       setTitle("");
       setDescription("");
       alert("작품이 업로드되었습니다!");
-    } catch (err:any) {
-      setError(err.message);
+    } catch (err:unknown) {
+      if (err instanceof Error) {
+        setError("error")
+      } else {
+        console.error("An unknown error occurred", error);
+      }
     }
   };
 
@@ -99,8 +90,7 @@ export default function ShareWorkPage() {
           <p className="mt-1 text-xs text-gray-500">선택된 태그: {selectedTags.length}/5</p>
         </div>
         <input className="border p-2 m-2" type="file" accept="image/*" onChange={(e) => setThumbnail(e.target.files?.[0] || null)} />
-        {/* 🔹 미리보기 */}
-        {preview && <img src={preview} alt="썸네일 미리보기" className="mt-2 w-40 h-40 object-cover border rounded" />}
+        
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">작품 업로드</button>
       </form>
       {error && <p className="text-red-500">{error}</p>}
