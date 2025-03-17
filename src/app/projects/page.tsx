@@ -99,6 +99,8 @@ export default function WorkBoardPage() {
         work.id === workId ? { ...work, likes: work.likes + 1 } : work
       )
     );
+    setLikedProjects((prevLiked) => [...prevLiked, workId]);
+
   };
 
   return (
